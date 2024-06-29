@@ -27,3 +27,7 @@ Each process is provided a fix time to execute, it is called a quantum.
 Once a process is executed for a given time period, it is preempted and other process executes for a given time period.
 Context switching is used to save states of preempted processes.
 
+5.Multilevel Queue Scheduling Algorithm
+Multilevel Queue Scheduling Algorithm segregates processes into multiple queues based on priority or type, each with its own scheduling policy,enabling efficient and flexible process management in operating systems.
+
+
