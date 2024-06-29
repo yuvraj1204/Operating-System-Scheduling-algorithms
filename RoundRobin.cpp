@@ -1,59 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
-void merge(int a[],int left[],int leftCount,int right[],int rightCount){
-	int i=0,j=0,k=0;
-	while(i<leftCount && j<rightCount){
-		if(left[i]<right[j])  a[k++]=left[i++];
-		else a[k++]=right[j++];
-	}
-	while(i<leftCount)   a[k++] = left[i++];
-	while(j<rightCount)  a[k++] = right[j++];
-}
-void mergeSort(int a[],int n){
-	int middle=n/2;
-	int *left,*right;
-	if(n<2) return;
-	left = new int[middle];
-	right = new int[n-middle];
-	for(int i=0;i<middle;i++)  left[i]=a[i];
-	for(int i=middle;i<n;i++)  right[i-middle]=a[i];
-	mergeSort(left,middle);
-    mergeSort(right,n-middle);
-    merge(a,left,middle,right,n-middle);
-    delete left;
-    delete right;
-}
 int main(int argc, char const *argv[])
 {
 	ios_base::sync_with_stdio(false);
 	int n;
-	cout<<"Enter the number of processes";
+	cout<<"Enter the number of processes ";
 	cin>>n;
-	int bt[n],wt[n],tat[n],total=0;
-    for(int i=0;i<n;i++)
-    {
-        wt[i]=0;
-    }
-	float avg_wt,avg_tat;
-	for(int i=0 ; i<n ; i++){
-		cout<<"Enter the burst time for process "<<i+1<<":";
-		cin>>bt[i];
-	}
-	mergeSort(bt,n);
-	for(int i=1;i<n;i++){
-		for(int j=0;j<i;j++){
-			wt[i] += bt[j];
-		}
-		total+=wt[i];
-	}
-	avg_wt=(float)total/n;
-	total=0;
+	int flag,count,time,arrivalTime[n],burstTime[n],remainingTime[n],wait_time=0,turn_around_time=0,time_quantum;
+	int remain=n;
 	for(int i=0;i<n;i++){
-		tat[i]=wt[i]+bt[i];
-		total+=tat[i];
+		cout<<"Enter the arrival and burst time for process "<<i+1<<":";
+		cin>>arrivalTime[i]>>burstTime[i];
+        remainingTime[i]=burstTime[i];
 	}
-	avg_tat=(float)total/n;
-	cout<<"Average waiting time is "<<avg_wt<<"\n";
-	cout<<"Average turnaround time is "<<avg_tat<<"\n";
+	cout<<"Enter time quantum ";
+	cin>>time_quantum;
+    cout<<"\nProcess\t"<<"|TAT\t"<<"|Waitng Time\n";
+    for(time=0,count=0;remain!=0;){
+    	if(remainingTime[count]<=time_quantum && remainingTime[count]>0){
+    		time+=remainingTime[count];
+    		remainingTime[count]=0;
+    		flag=1;
+    	}
+    	else if(remainingTime[count]>time_quantum && remainingTime[count]>0){
+    		remainingTime[count]-=time_quantum;
+    		time+=time_quantum;
+    	}
+    	if(flag==1){
+    		remain--;
+    		cout<<"P["<<count+1<<"]\t"<<"|"<<time-arrivalTime[count]<<"\t|"<<time-arrivalTime[count]-burstTime[count]<<"\n";
+    		wait_time+=time-arrivalTime[count];
+    		turn_around_time+=time-arrivalTime[count]-burstTime[count];
+    		flag=0;
+    	}
+    	if(count==n-1)
+    		count=0;
+    	else if(arrivalTime[count+1]<=time)
+    		count++;
+    	else count=0;
+    }
+    cout<<"Average waitng time is :"<<wait_time*1.0/n<<"\n";
+    cout<<"Average turnaround time :"<<turn_around_time*1.0/n;
 	return 0;
 }
